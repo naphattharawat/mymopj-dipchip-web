@@ -321,8 +321,6 @@ export class MainComponent implements OnInit {
           await this.print(rs.queueId);
           this.btnSelectServicePoint = false;
           this.tabServicePoint = false;
-          console.log(this.cardCid);
-
           if (this.isSendAPIGET) {
             await this.kioskService.sendAPITRIGGER(this.token, 'GET', this.urlSendAPIGET, this.his.hn, this.cardCid, servicePoint.local_code, servicePoint.service_point_id);
           }
