@@ -46,6 +46,8 @@ export class MainComponent implements OnInit {
   urlSendAPIGET: any;
   urlSendAPIPOST: any;
   status = 'offline';
+  queueNumber: any;
+  roomName: any;
 
   @ViewChild(CountdownComponent) counter: CountdownComponent;
 
@@ -318,6 +320,8 @@ export class MainComponent implements OnInit {
       const rs: any = await this.kioskService.register(this.token, data);
       if (rs.statusCode === 200) {
         if (rs.queueId) {
+          console.log(rs);
+
           await this.print(rs.queueId);
           this.btnSelectServicePoint = false;
           this.tabServicePoint = false;
