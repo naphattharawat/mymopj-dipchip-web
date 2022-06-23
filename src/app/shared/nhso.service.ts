@@ -41,6 +41,11 @@ export class NhsoService {
     }, this.httpOptions).toPromise();
   }
 
+  getLastToken(cid) {
+    const _url = `http://localhost:8189/api/nhso-service/latest-authen-code/${cid}`;
+    return this.httpClient.post(_url, this.httpOptions).toPromise();
+  }
+
   async save(data: object) {
     const _url = `${this.apiUrl}/nhso`;
     return this.httpClient.post(_url, data, this.httpOptions).toPromise();

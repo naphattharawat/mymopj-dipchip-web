@@ -102,7 +102,7 @@
           [ngClass]="{'col-3': servicePointList.length > 6,'col-4':servicePointList.length <=6}"
           *ngFor="let i of  servicePointList">
           <button class="btn btn-primary" style="width: 100%;padding: 2rem;font-size: 2.5rem"
-            (click)="register(i)">{{i.service_point_name}}</button>
+            (click)="register(i)" [disabled]="isClick">{{i.service_point_name}}</button>
         </div>
       </div>
 
@@ -115,12 +115,12 @@
 </div>
 
 <div class="body" style="overflow: hidden" *ngIf="status == 'offline'">
-  <button class="btn btn-success" style="position: absolute;z-index: 999;top:75%;left:35%;width: 30%;font-size: 3rem;" (click)="getInfoFromCard()" [disabled]="btnGetCard">ตรวจสอบสิทธิ์</button>
+  <!-- <button class="btn btn-success" style="position: absolute;z-index: 999;top:75%;left:35%;width: 30%;font-size: 3rem;" (click)="getInfoFromCard()" [disabled]="btnGetCard">ตรวจสอบสิทธิ์</button> -->
   <img style="width: 100%" src="./assets/images/bg.png" (click)="onClickManual()">
 </div>
 
 
-<div class="body" *ngIf="status =='manual'">
+<div class="body" *ngIf="status =='manual' && isManual">
   <div class="container">
     <div class="row">
       <div class="col-12">

@@ -51,6 +51,8 @@ export class MainComponent implements OnInit {
   urlSendAPIGET: any;
   urlSendAPIPOST: any;
   status = 'offline';
+  isManual = false;
+  isClick = false;
   // status = 'online';
   queueNumber: any;
   roomName: any;
@@ -88,7 +90,6 @@ export class MainComponent implements OnInit {
         this.isSendAPIGET = localStorage.getItem('isSendAPIGET') === 'Y' ? true : false;
         this.isSendAPIPOST = localStorage.getItem('isSendAPIPOST') === 'Y' ? true : false;
         this.initialSocket();
-        this.setInterval();
       } else {
         this.alertService.error('ไม่พบ TOKEN');
       }
@@ -104,6 +105,7 @@ export class MainComponent implements OnInit {
     await this.getInfoHospital();
     await this.getServicePoint();
     await this.getTokenNHSO();
+    await this.setInterval();
   }
 
   async getTokenNHSO() {
@@ -236,7 +238,7 @@ export class MainComponent implements OnInit {
         this.status = 'online';
         this.setDataFromHIS(type, rs.results);
       } else {
-        this.alertService.error('ไม่พบข้อมูล');
+        this.alertService.error('ไม่พบข้อมูล HN กรุณาติดต่อห้องบัตร');
       }
     } catch (error) {
       console.log(error);
@@ -275,7 +277,7 @@ export class MainComponent implements OnInit {
   }
 
   onSearch() {
-    if (this.cid.length == 13) {
+    if (this.cid.length === 13) {
       this.onSearchCid();
     } else {
       this.onSearchHN();
@@ -372,6 +374,7 @@ export class MainComponent implements OnInit {
     this.btnSelectServicePoint = false;
     this.tabServicePoint = false;
     this.status = 'offline';
+    this.isManual = false;
   }
 
   async print(queueId) {
@@ -417,6 +420,7 @@ export class MainComponent implements OnInit {
 
   async register(servicePoint) {
     this.isPrinting = true;
+    this.isClick = true;
     const priorityId = this.priorityId || '1';
     const data = {
       hn: this.his.hn,
@@ -437,23 +441,6 @@ export class MainComponent implements OnInit {
       if (rs.statusCode === 200) {
         if (rs.queueId) {
           await this.print(rs.queueId);
-          try {
-            const nhsoInfo: any = await this.nhsoService.getCard();
-            // console.log(nhsoInfo);
-            if (nhsoInfo.status === 200) {
-              console.log(nhsoInfo.body);
-              const authenNHSO: any = await this.nhsoService.getAuthenCode(nhsoInfo.body.pid, nhsoInfo.body.correlationId, this.his.hn, '12272');
-              if (authenNHSO.status === 200) {
-                await this.nhsoService.save({
-                  claimCode: authenNHSO.body.claimCode,
-                  pid: authenNHSO.body.pid,
-                  createdDate: authenNHSO.body.createdDate
-                });
-              }
-            }
-          } catch (error) {
-            console.log(error);
-          }
           this.btnSelectServicePoint = false;
           this.tabServicePoint = false;
           this.tabPrioritie = false;
@@ -464,14 +451,17 @@ export class MainComponent implements OnInit {
           if (this.isSendAPIPOST) {
             await this.kioskService.sendAPITRIGGER(this.token, 'POST', this.urlSendAPIPOST, this.his.hn, this.cardCid, servicePoint.local_code, servicePoint.service_point_id, rs.queueNumber);
           }
-          // this.clearData();
-
+          if (this.isManual) {
+            await this.clearData();
+          }
         }
       } else {
         this.alertService.error('ไม่สามารถลงทะเบียนได้');
         this.isPrinting = false;
       }
+      this.isClick = false;
     } catch (error) {
+      this.isClick = false;
       this.isPrinting = false;
       console.log(error);
     }
@@ -511,6 +501,7 @@ export class MainComponent implements OnInit {
   onClickManual() {
     this.cid = '';
     this.status = 'manual';
+    this.isManual = true;
   }
 
   onkeycid(num) {
@@ -518,6 +509,7 @@ export class MainComponent implements OnInit {
       this.cid = this.cid.substring(0, this.cid.length - 1);
     } else if (num === 'b') {
       this.status = 'offline';
+      this.isManual = false;
     } else {
       if (this.cid.length < 13) {
         this.cid = `${this.cid || ''}${num}`;
@@ -535,12 +527,14 @@ export class MainComponent implements OnInit {
         this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
         if (this.cardCid) {
           await this.getPatient('CID');
-          await this.getRemed();
+          await this.getAuthenCode(rs);
+          // await this.getRemed();
           // await this.getNhso(this.cardCid);
           // NHSO
           this.rightName = rs.body.mainInscl ? rs.body.mainInscl : '-';
           this.rightHospital = rs.body.subInscl ? rs.body.subInscl : '-';
-          this.rightStartDate = rs.body.transDate ? `${moment(rs.body.transDate).format('DD MMM ')} ${moment(rs.body.transDate).get('year')}` : '-';
+          moment.locale('th');
+          this.rightStartDate = rs.body.transDate ? `${moment(rs.body.transDate).format('DD MMM ')} ${moment(rs.body.transDate).get('year') + 543}` : '-';
         } else {
           this.alertService.error('บัตรมีปัญหา กรุณาเสียบใหม่อีกครั้ง', null, 1000);
         }
@@ -555,30 +549,36 @@ export class MainComponent implements OnInit {
   setInterval() {
     // this.getCardOnly();
     this.id = setInterval(() => {
-      this.getCardOnlyCheck();
-      // if (this.status == 'OFLINE') {
+      if ((this.status === 'offline' || this.status === 'online') && !this.isManual) {
+        this.getCardOnlyCheck();
+      }
       // } else if (this.status == 'ONLINE') {
       //   this.getCardOnlyCheck();
       // }
-    }, 5000);
+    }, 1000);
     console.log(this.id);
 
   }
 
   async getCardOnlyCheck() {
-    const rs: any = await this.nhsoService.getCardOnly();
-    if (rs.status === 200) {
-      if (this.status !== 'online') {
-        this.cardCid = rs.body.pid;
-        this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
-        this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
+    try {
+      const rs: any = await this.nhsoService.getCardOnly();
+      if (rs.status === 200) {
+        if (this.status !== 'online') {
+          await this.getInfoFromCard();
+          // this.cardCid = rs.body.pid;
+          // this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
+          // this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
+        }
+        this.status = 'online';
+        return true;
+      } else {
+        console.log('offline');
+        this.clearData();
+        return false;
       }
-      this.status = 'online';
-      return true;
-    } else {
-      console.log('offline');
-      
-      this.status = 'offline';
+    } catch (error) {
+      this.clearData();
       return false;
     }
   }
@@ -599,6 +599,45 @@ export class MainComponent implements OnInit {
       }
     } else {
       this.alertService.error('บัตรมีปัญหา กรุณาเสียบใหม่อีกครั้ง', null, 1000);
+    }
+  }
+
+  async getAuthenCode(nhsoInfo: any) {
+    try {
+      if (nhsoInfo.status === 200) {
+        const authenNHSO: any = await this.nhsoService.getAuthenCode(nhsoInfo.body.pid, nhsoInfo.body.correlationId, this.his.hn, '12272');
+        if (authenNHSO.status === 200) {
+          try {
+            await this.nhsoService.save({
+              claimCode: authenNHSO.body.claimCode,
+              pid: authenNHSO.body.pid,
+              createdDate: authenNHSO.body.createdDate
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          await this.getLastToken(nhsoInfo.body.pid);
+        }
+      }
+    } catch (error) {
+      await this.getLastToken(nhsoInfo.body.pid);
+      console.log(error);
+    }
+  }
+
+  async getLastToken(cid) {
+    try {
+      const authenNHSO: any = await this.nhsoService.getLastToken(cid);
+      if (authenNHSO.status === 200) {
+        await this.nhsoService.save({
+          claimCode: authenNHSO.body.claimCode,
+          pid: authenNHSO.body.pid,
+          createdDate: authenNHSO.body.createdDate
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }
