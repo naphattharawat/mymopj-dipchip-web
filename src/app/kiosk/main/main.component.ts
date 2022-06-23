@@ -568,15 +568,17 @@ export class MainComponent implements OnInit {
   async getCardOnlyCheck() {
     const rs: any = await this.nhsoService.getCardOnly();
     if (rs.status === 200) {
-      if (this.status !== 'ONLINE') {
+      if (this.status !== 'online') {
         this.cardCid = rs.body.pid;
         this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
         this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
       }
-      this.status = 'ONLINE';
+      this.status = 'online';
       return true;
     } else {
-      this.status = 'OFLINE';
+      console.log('offline');
+      
+      this.status = 'offline';
       return false;
     }
   }
@@ -589,7 +591,7 @@ export class MainComponent implements OnInit {
       this.cardCid = rs.body.pid;
       this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
       this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
-      this.status = 'ONLINE';
+      this.status = 'online';
       if (this.cardCid) {
         await this.getPatient('CID');
         await this.getRemed();
