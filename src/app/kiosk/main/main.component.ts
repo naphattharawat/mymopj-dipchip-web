@@ -8,16 +8,21 @@ import { MqttClient } from 'mqtt';
 import * as Random from 'random-js';
 import { CountdownComponent } from 'ngx-countdown';
 import * as moment from 'moment';
+import { NhsoService } from 'src/app/shared/nhso.service';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
+  id: any;
   jwtHelper = new JwtHelperService();
   hn: any;
   tabServicePoint = false;
   btnSelectServicePoint = false;
+  tabPrioritie = false;
+  priorityId: any;
+  // tabPrioritie = true;
   tabProfile = true;
   servicePointList = [];
   token: any;
@@ -46,9 +51,14 @@ export class MainComponent implements OnInit {
   urlSendAPIGET: any;
   urlSendAPIPOST: any;
   status = 'offline';
+  // status = 'online';
   queueNumber: any;
   roomName: any;
-
+  nhsoToken: any;
+  nhsoCid: any;
+  cid = '';
+  remed: any = false;
+  btnGetCard = false;
   @ViewChild(CountdownComponent) counter: CountdownComponent;
 
   constructor(
@@ -56,7 +66,8 @@ export class MainComponent implements OnInit {
     private alertService: AlertService,
     private kioskService: KioskService,
     private zone: NgZone,
-    private router: Router) {
+    private router: Router,
+    private nhsoService: NhsoService) {
     this.route.queryParams
       .subscribe(params => {
         this.token = params.token || null;
@@ -77,6 +88,7 @@ export class MainComponent implements OnInit {
         this.isSendAPIGET = localStorage.getItem('isSendAPIGET') === 'Y' ? true : false;
         this.isSendAPIPOST = localStorage.getItem('isSendAPIPOST') === 'Y' ? true : false;
         this.initialSocket();
+        this.setInterval();
       } else {
         this.alertService.error('ไม่พบ TOKEN');
       }
@@ -88,9 +100,23 @@ export class MainComponent implements OnInit {
   }
   async initialSocket() {
     // connect mqtt
-    await this.connectWebSocket();
+    // await this.connectWebSocket();
     await this.getInfoHospital();
     await this.getServicePoint();
+    await this.getTokenNHSO();
+  }
+
+  async getTokenNHSO() {
+    try {
+      const rs: any = await this.kioskService.getTokenNHSO(this.token);
+      if (rs.statusCode === 200) {
+        this.nhsoToken = rs.rows.token;
+        this.nhsoCid = rs.rows.cid;
+      }
+    } catch (error) {
+      console.log(error);
+
+    }
   }
 
   connectWebSocket() {
@@ -117,8 +143,8 @@ export class MainComponent implements OnInit {
       try {
         const _payload = JSON.parse(payload.toString());
         if (_payload.ok) {
-          await this.setDataFromCard(_payload.results);
           this.status = 'online';
+          await this.setDataFromCard(_payload.results);
         } else {
           this.status = 'offline';
           this.clearData();
@@ -198,17 +224,41 @@ export class MainComponent implements OnInit {
     }
   }
 
-  async getPatient() {
+  async getPatient(type) {
     try {
-      if (this.cardCid) {
-        const rs: any = await this.kioskService.getPatient(this.token, { 'cid': this.cardCid });
-        if (rs.statusCode === 200) {
-          this.setDataFromHIS(rs.results);
-        }
+      let rs: any;
+      if (type === 'CID') {
+        rs = await this.kioskService.getPatient(this.token, { 'cid': this.cardCid });
+      } else {
+        rs = await this.kioskService.getPatient(this.token, { 'hn': this.cardCid });
+      }
+      if (rs.statusCode === 200) {
+        this.status = 'online';
+        this.setDataFromHIS(type, rs.results);
+      } else {
+        this.alertService.error('ไม่พบข้อมูล');
       }
     } catch (error) {
       console.log(error);
       this.alertService.serverError();
+    }
+  }
+
+  async getRemed() {
+    try {
+      if (this.hisHn) {
+        // const rs: any = await this.kioskService.getRemed(this.token, this.hisHn);
+        // if (rs.statusCode === 200) {
+        //   this.remed = true;
+        // } else {
+        //   this.remed = false;
+        // }
+        this.remed = false;
+      }
+    } catch (error) {
+      this.remed = false;
+      console.log(error);
+      // this.alertService.serverError();
     }
   }
 
@@ -224,37 +274,82 @@ export class MainComponent implements OnInit {
     this.tabProfile = true;
   }
 
-  async setDataFromCard(data) {
-    this.cardCid = data.cid;
-    this.cardFullName = data.fullname;
-    this.cardBirthDate = data.birthDate;
-    if (this.cardCid) {
-      await this.getPatient();
-      await this.getNhso(this.cardCid);
-
+  onSearch() {
+    if (this.cid.length == 13) {
+      this.onSearchCid();
     } else {
-      this.alertService.error('บัตรมีปัญหา กรุณาเสียบใหม่อีกครั้ง', null, 1000);
+      this.onSearchHN();
+    }
+  }
+
+  async onSearchHN() {
+    // this.status = 'online';
+    this.cardCid = this.cid;
+    this.hn = this.cid;
+    this.cid = '';
+
+    await this.getPatient('HN');
+    await this.getRemed();
+    await this.getNhso(this.cardCid);
+  }
+
+  async onSearchCid() {
+    // this.status = 'online';
+    this.cardCid = this.cid;
+    await this.getPatient('CID');
+    await this.getRemed();
+    await this.getNhso(this.cardCid);
+  }
+
+  async setDataFromCard(data) {
+    try {
+
+      this.cardCid = data.cid;
+      this.cardFullName = data.fullname;
+      this.cardBirthDate = data.birthDate;
+      if (this.cardCid) {
+        await this.getPatient('CID');
+        await this.getRemed();
+        await this.getNhso(this.cardCid);
+      } else {
+        this.alertService.error('บัตรมีปัญหา กรุณาเสียบใหม่อีกครั้ง', null, 1000);
+      }
+    } catch (error) {
+      console.log(error);
+
     }
 
   }
 
-  async setDataFromHIS(data) {
-    this.his = data;
-    this.hisHn = data.hn;
-    this.hisFullName = `${data.title}${data.firstName} ${data.lastName}`;
-    this.hisBirthDate = data.birthDate;
-    if (this.his) {
-      await this.setTab();
+  async setDataFromHIS(type, data) {
+    if (data.hn) {
+      this.his = data;
+      this.hisHn = data.hn;
+      this.hisFullName = `${data.title}${data.firstName} ${data.lastName}`;
+      this.hisBirthDate = data.birthDate;
+      this.remed = data.remed || false;
+      if (this.his) {
+        await this.setTab();
+      }
+    } else {
+      this.alertService.error('ไม่พบ HN');
     }
   }
 
   setTab() {
-    if (+this.servicePointList.length <= 3) {
+    if (+this.servicePointList.length <= 6) {
+      this.tabPrioritie = true;
+      // this.tabServicePoint = true;
       this.btnSelectServicePoint = false;
-      this.tabServicePoint = true;
     } else {
       this.btnSelectServicePoint = true;
     }
+  }
+
+  clickPrioritie(id) {
+    this.tabPrioritie = false;
+    this.priorityId = id;
+    this.tabServicePoint = true;
   }
 
   clearData() {
@@ -270,9 +365,13 @@ export class MainComponent implements OnInit {
     this.rightStartDate = '';
     this.rightHospital = '';
 
+
+    this.remed = null;
+
     this.tabProfile = true;
     this.btnSelectServicePoint = false;
     this.tabServicePoint = false;
+    this.status = 'offline';
   }
 
   async print(queueId) {
@@ -298,9 +397,27 @@ export class MainComponent implements OnInit {
     }
   }
 
+  async printIdCard() {
+    const printerId = localStorage.getItem('clientPrinterId');
+    const topicPrint = '/printer/' + printerId;
+
+    const data = {
+      topic: topicPrint,
+      printIdCard: true
+    };
+    try {
+      const rs: any = await this.kioskService.printIdCard(this.token, data);
+      this.isPrinting = false;
+    } catch (error) {
+      console.log(error);
+      this.isPrinting = false;
+      alert('ไม่สามารถพิมพ์บัตรคิวได้');
+    }
+  }
+
   async register(servicePoint) {
     this.isPrinting = true;
-    const priorityId = localStorage.getItem('kiosDefaultPriority') || '1';
+    const priorityId = this.priorityId || '1';
     const data = {
       hn: this.his.hn,
       vn: 'K' + moment().format('x'),
@@ -313,23 +430,39 @@ export class MainComponent implements OnInit {
       lastName: this.his.lastName,
       title: this.his.title,
       birthDate: this.his.engBirthDate,
-      sex: this.his.sex
+      sex: this.his.sex,
     };
     try {
-
       const rs: any = await this.kioskService.register(this.token, data);
       if (rs.statusCode === 200) {
         if (rs.queueId) {
-          console.log(rs);
-
           await this.print(rs.queueId);
+          try {
+            const nhsoInfo: any = await this.nhsoService.getCard();
+            // console.log(nhsoInfo);
+            if (nhsoInfo.status === 200) {
+              console.log(nhsoInfo.body);
+              const authenNHSO: any = await this.nhsoService.getAuthenCode(nhsoInfo.body.pid, nhsoInfo.body.correlationId, this.his.hn, '12272');
+              if (authenNHSO.status === 200) {
+                await this.nhsoService.save({
+                  claimCode: authenNHSO.body.claimCode,
+                  pid: authenNHSO.body.pid,
+                  createdDate: authenNHSO.body.createdDate
+                });
+              }
+            }
+          } catch (error) {
+            console.log(error);
+          }
           this.btnSelectServicePoint = false;
           this.tabServicePoint = false;
+          this.tabPrioritie = false;
+          this.priorityId = null;
           if (this.isSendAPIGET) {
-            await this.kioskService.sendAPITRIGGER(this.token, 'GET', this.urlSendAPIGET, this.his.hn, this.cardCid, servicePoint.local_code, servicePoint.service_point_id);
+            await this.kioskService.sendAPITRIGGER(this.token, 'GET', this.urlSendAPIGET, this.his.hn, this.cardCid, servicePoint.local_code, servicePoint.service_point_id, rs.queueNumber);
           }
           if (this.isSendAPIPOST) {
-            await this.kioskService.sendAPITRIGGER(this.token, 'POST', this.urlSendAPIPOST, this.his.hn, this.cardCid, servicePoint.local_code, servicePoint.service_point_id);
+            await this.kioskService.sendAPITRIGGER(this.token, 'POST', this.urlSendAPIPOST, this.his.hn, this.cardCid, servicePoint.local_code, servicePoint.service_point_id, rs.queueNumber);
           }
           // this.clearData();
 
@@ -345,24 +478,26 @@ export class MainComponent implements OnInit {
   }
 
   async getNhso(cid) {
-    const nhsoToken = localStorage.getItem('nhsoToken');
-    const nhsoCid = localStorage.getItem('nhsoCid');
+    const nhsoToken = this.nhsoToken || localStorage.getItem('nhsoToken');
+    const nhsoCid = this.nhsoCid || localStorage.getItem('nhsoCid');
     const data = `<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tok=\"http://tokenws.ucws.nhso.go.th/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tok:searchCurrentByPID>\n         <!--Optional:-->\n         <user_person_id>${nhsoCid}</user_person_id>\n         <!--Optional:-->\n         <smctoken>${nhsoToken}</smctoken>\n         <!--Optional:-->\n         <person_id>${cid}</person_id>\n      </tok:searchCurrentByPID>\n   </soapenv:Body>\n</soapenv:Envelope>`;
     try {
-      const nhso: any = {};
-      const rs: any = await this.kioskService.getNhso(this.token, data);
-      rs.results.forEach(v => {
-        if (v.name === 'hmain') { nhso.hmain = v.elements[0].text; }
-        if (v.name === 'hmain_name') { nhso.hmain_name = v.elements[0].text; }
-        if (v.name === 'maininscl') { nhso.maininscl = v.elements[0].text; }
-        if (v.name === 'maininscl_main') { nhso.maininscl_main = v.elements[0].text; }
-        if (v.name === 'maininscl_name') { nhso.maininscl_name = v.elements[0].text; }
-        if (v.name === 'startdate') { nhso.startdate = v.elements[0].text; }
-        if (v.name === 'startdate_sss') { nhso.startdate_sss = v.elements[0].text; }
-      });
-      this.rightName = nhso.maininscl ? `${nhso.maininscl_name} (${nhso.maininscl})` : '-';
-      this.rightHospital = nhso.hmain ? `${nhso.hmain_name} (${nhso.hmain})` : '-';
-      this.rightStartDate = nhso.startdate ? `${moment(nhso.startdate, 'YYYYMMDD').format('DD MMM ')} ${moment(nhso.startdate, 'YYYYMMDD').get('year')}` : '-';
+      if (nhsoToken && nhsoCid) {
+        const nhso: any = {};
+        const rs: any = await this.kioskService.getNhso(this.token, data);
+        rs.results.forEach(v => {
+          if (v.name === 'hmain') { nhso.hmain = v.elements[0].text; }
+          if (v.name === 'hmain_name') { nhso.hmain_name = v.elements[0].text; }
+          if (v.name === 'maininscl') { nhso.maininscl = v.elements[0].text; }
+          if (v.name === 'maininscl_main') { nhso.maininscl_main = v.elements[0].text; }
+          if (v.name === 'maininscl_name') { nhso.maininscl_name = v.elements[0].text; }
+          if (v.name === 'startdate') { nhso.startdate = v.elements[0].text; }
+          if (v.name === 'startdate_sss') { nhso.startdate_sss = v.elements[0].text; }
+        });
+        this.rightName = nhso.maininscl ? `${nhso.maininscl_name} (${nhso.maininscl})` : '-';
+        this.rightHospital = nhso.hmain ? `${nhso.hmain_name} (${nhso.hmain})` : '-';
+        this.rightStartDate = nhso.startdate ? `${moment(nhso.startdate, 'YYYYMMDD').format('DD MMM ')} ${moment(nhso.startdate, 'YYYYMMDD').get('year')}` : '-';
+      }
     } catch (error) {
       console.log(error);
       // this.alertService.error(error.message);
@@ -371,6 +506,97 @@ export class MainComponent implements OnInit {
 
   home() {
     this.router.navigate(['/kiosk/setting']);
+  }
 
+  onClickManual() {
+    this.cid = '';
+    this.status = 'manual';
+  }
+
+  onkeycid(num) {
+    if (num === 'x') {
+      this.cid = this.cid.substring(0, this.cid.length - 1);
+    } else if (num === 'b') {
+      this.status = 'offline';
+    } else {
+      if (this.cid.length < 13) {
+        this.cid = `${this.cid || ''}${num}`;
+      }
+    }
+  }
+
+  async getInfoFromCard() {
+    try {
+      this.btnGetCard = true;
+      const rs: any = await this.nhsoService.getCard();
+      if (rs.status === 200) {
+        this.cardCid = rs.body.pid;
+        this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
+        this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
+        if (this.cardCid) {
+          await this.getPatient('CID');
+          await this.getRemed();
+          // await this.getNhso(this.cardCid);
+          // NHSO
+          this.rightName = rs.body.mainInscl ? rs.body.mainInscl : '-';
+          this.rightHospital = rs.body.subInscl ? rs.body.subInscl : '-';
+          this.rightStartDate = rs.body.transDate ? `${moment(rs.body.transDate).format('DD MMM ')} ${moment(rs.body.transDate).get('year')}` : '-';
+        } else {
+          this.alertService.error('บัตรมีปัญหา กรุณาเสียบใหม่อีกครั้ง', null, 1000);
+        }
+      }
+      this.btnGetCard = false;
+    } catch (error) {
+      this.btnGetCard = false;
+      this.getCardOnly2();
+    }
+  }
+
+  setInterval() {
+    // this.getCardOnly();
+    this.id = setInterval(() => {
+      this.getCardOnlyCheck();
+      // if (this.status == 'OFLINE') {
+      // } else if (this.status == 'ONLINE') {
+      //   this.getCardOnlyCheck();
+      // }
+    }, 5000);
+    console.log(this.id);
+
+  }
+
+  async getCardOnlyCheck() {
+    const rs: any = await this.nhsoService.getCardOnly();
+    if (rs.status === 200) {
+      if (this.status !== 'ONLINE') {
+        this.cardCid = rs.body.pid;
+        this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
+        this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
+      }
+      this.status = 'ONLINE';
+      return true;
+    } else {
+      this.status = 'OFLINE';
+      return false;
+    }
+  }
+
+
+
+  async getCardOnly2() {
+    const rs: any = await this.nhsoService.getCardOnly();
+    if (rs.status === 200) {
+      this.cardCid = rs.body.pid;
+      this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
+      this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
+      this.status = 'ONLINE';
+      if (this.cardCid) {
+        await this.getPatient('CID');
+        await this.getRemed();
+        await this.getNhso(this.cardCid);
+      }
+    } else {
+      this.alertService.error('บัตรมีปัญหา กรุณาเสียบใหม่อีกครั้ง', null, 1000);
+    }
   }
 }

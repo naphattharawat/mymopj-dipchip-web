@@ -9,14 +9,18 @@
       </strong>)</button>
   </div>
 </div>
-
 <div class="body" *ngIf="status == 'online'">
   <div class="container">
     <div class="row">
       <div class="col-12">
         <div class='silver'>
           <div style="font-size: 2.5rem; font-weight: bold;" (dblclick)="home()">{{hospname}}</div>
-          <h1>ระบบออกคิวอัตโนมัติ (Q4U)</h1>
+          <h1>ระบบออกคิวอัตโนมัติ (Q4U)
+
+            <div style="float: left;">
+              <img style="width: 50px" src="./assets/images/idcard.png" (click)="printIdCard()">
+            </div>
+          </h1>
         </div>
       </div>
 
@@ -46,6 +50,8 @@
             <p id="txtHISFullname">{{hisFullName || '-'}}</p>
             <span>วันเกิด</span>
             <p id="txtHISBirthdate">{{hisBirthDate || '-'}}</p>
+            <span *ngIf="remed">ยาเดิม</span>
+            <!-- <p id="txtHISBirthdate">{{hisBirthDate || '-'}}</p> -->
             <h4 style="text-align: right">**จากฐานข้อมูลในโรงพยาบาล</h4>
           </div>
         </div>
@@ -68,9 +74,25 @@
       <button *ngIf="btnSelectServicePoint" type="button" class="btn btn-primary"
         style="height: 6rem; font-size: 1.8em; display: block; margin: auto;"
         (click)="onSelectServicePointList()">เลือกแผนกเข้ารับบริการ</button>
-
+      <div *ngIf="!cardFullName">
+        <button class="btn btn-danger" (click)="clearData()"><span class="h3">กลับหน้าหลัก</span> </button>
+      </div>
     </div>
 
+    <div *ngIf="tabPrioritie && hisHn">
+      <div class="row" style="margin-top:20px">
+        <div class="col-3"></div>
+        <div class="col-3">
+          <button class="btn btn-primary" style="width: 100%;padding: 2rem;font-size: 2.5rem"
+            (click)="clickPrioritie(1)">มาเอง</button>
+        </div>
+        <!-- <div class="col-1"></div> -->
+        <div class="col-3">
+          <button class="btn btn-primary" style="width: 100%;padding: 2rem;font-size: 2.5rem"
+            (click)="clickPrioritie(3)">มาแทน</button>
+        </div>
+      </div>
+    </div>
 
     <div id="divDepartment" *ngIf="tabServicePoint">
       <div style="margin: 20px;"></div>
@@ -87,67 +109,20 @@
       <div style="margin: 10px;" *ngIf="servicePointList.length > 3">
         <button class="btn btn-danger" type="button" (click)="cancel()" [disabled]="isPrinting"
           style="height: 6rem; font-size: 1.8em; display: block; margin: auto;">ยกเลิก</button>
-
       </div>
     </div>
-
-    <!-- <div id="divSetting" style="display: none;">
-      <div style="margin: 20px;"></div>
-  
-      <form class="silver">
-        <span class="h1">Connection setting</span>
-        <div class="row">
-          <div class="column">
-            <label for="txtPrinterId">Printer ID</label>
-            <input type="text" placeholder="OPD-PRINTER" id="txtPrinterId">
-          </div>
-          <div class="column">
-            <label for="txtApiUrl">API URL</label>
-            <input type="text" placeholder="http://" id="txtApiUrl">
-          </div>
-        </div>
-        <div class="row">
-          <div class="column">
-            <label for="txtApiToken">API TOKEN</label>
-            <input type="text" id="txtApiToken">
-          </div>
-        </div>
-  
-        <div class="row">
-          <div class="column">
-            <label for="txtNHSOCid">NHSO CID</label>
-            <input type="text" placeholder="" id="txtNHSOCid">
-          </div>
-          <div class="column">
-            <label for="txtNHSOToken">NHSO TOKEN</label>
-            <input type="text" placeholder="" id="txtNHSOToken">
-          </div>
-        </div>
-  
-        <div class="row">
-          <div class="column column-50 column-offset-25">
-            <label for="slPriority">Default priority</label>
-            <select name="slPriority" id="slPriority"></select>
-          </div>
-  
-          <div class="column">
-  
-          </div>
-        </div>
-  
-        <button class="button-primary" type="button" id="btnConnectionSave">SAVE</button>
-        <button class="button-black" type="button" id="btnConnectionCancel">CANCEL</button>
-        |
-        <button class="button-primary" type="button" id="btnExit">Exit program</button>
-  
-    </div> -->
-
   </div>
 </div>
 
 <div class="body" style="overflow: hidden" *ngIf="status == 'offline'">
-  <!-- <div class="container"> -->
-  <!-- <div class="row">
+  <button class="btn btn-success" style="position: absolute;z-index: 999;top:75%;left:35%;width: 30%;font-size: 3rem;" (click)="getInfoFromCard()" [disabled]="btnGetCard">ตรวจสอบสิทธิ์</button>
+  <img style="width: 100%" src="./assets/images/bg.png" (click)="onClickManual()">
+</div>
+
+
+<div class="body" *ngIf="status =='manual'">
+  <div class="container">
+    <div class="row">
       <div class="col-12">
         <div class='silver'>
           <div style="font-size: 2.5rem; font-weight: bold;" (dblclick)="home()">{{hospname}}</div>
@@ -155,11 +130,62 @@
         </div>
       </div>
     </div>
+    <div style="margin: 20px;"></div>
     <div class="row">
       <div class="col-12">
-
+        <div class='silver'>
+          <input type="text" [(ngModel)]="cid" class="form-control"
+            style="font-size: 5rem;text-align: center;height:100px" maxlength="13" name="cid" id="">
+        </div>
       </div>
-    </div> -->
-  <img style="width: 100%" src="./assets/images/bg.png">
-  <!-- </div> -->
+    </div>
+    <div class="row" style="margin-top: 1rem;">
+      <div class="col-3"></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(1)" style="width:100%;height:80px"><span
+            class="h2">1</span></button></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(2)" style="width:100%;height:80px"><span
+            class="h2">2</span></button></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(3)" style="width:100%;height:80px"><span
+            class="h2">3</span></button></div>
+    </div>
+    <div class="row" style="margin-top: 1rem;">
+      <div class="col-3"></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(4)" style="width:100%;height:80px"><span
+            class="h2">4</span></button></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(5)" style="width:100%;height:80px"><span
+            class="h2">5</span></button></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(6)" style="width:100%;height:80px"><span
+            class="h2">6</span></button></div>
+    </div>
+    <div class="row" style="margin-top: 1rem;">
+      <div class="col-3"></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(7)" style="width:100%;height:80px"><span
+            class="h2">7</span></button></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(8)" style="width:100%;height:80px"><span
+            class="h2">8</span></button></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(9)" style="width:100%;height:80px"><span
+            class="h2">9</span></button></div>
+    </div>
+    <div class="row" style="margin-top: 1rem;">
+      <div class="col-3"></div>
+      <div class="col-2">
+        <button class="btn btn-primary" (click)="onkeycid('b')" style="width:100%;height:80px"><span class="h3"
+            style="line-height: 3.5rem;">กลับ</span></button>
+      </div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(0)" style="width:100%;height:80px"><span
+            class="h2">0</span></button></div>
+      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid('x')" style="width:100%;height:80px"><span
+            class="h2" style="line-height: 3.5rem;">
+            ←</span> </button> </div>
+    </div>
+    <div class="row" style="margin-top: 1rem;">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <button class="btn btn-success" style="width:100%;height:80px;" (click)="onSearch()"
+          >
+          <span class="h2">ค้นหา</span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
