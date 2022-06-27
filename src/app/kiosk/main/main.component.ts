@@ -517,28 +517,28 @@ export class MainComponent implements OnInit {
     }
   }
 
-  async getInfoFromCard() {
+  async getInfoFromCard(body) {
     try {
       this.btnGetCard = true;
-      const rs: any = await this.nhsoService.getCard();
-      if (rs.status === 200) {
-        this.cardCid = rs.body.pid;
-        this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
-        this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
+      // const rs: any = await this.nhsoService.getCard();
+      // if (rs.status === 200) {
+        this.cardCid = body.pid;
+        this.cardFullName = `${body.fname} ${body.lname}`;
+        this.cardBirthDate = moment(body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
         if (this.cardCid) {
           await this.getPatient('CID');
-          await this.getAuthenCode(rs);
+          await this.getNhso(this.cardCid);
+          this.getAuthenCode(this.cardCid);
           // await this.getRemed();
-          // await this.getNhso(this.cardCid);
           // NHSO
-          this.rightName = rs.body.mainInscl ? rs.body.mainInscl : '-';
-          this.rightHospital = rs.body.subInscl ? rs.body.subInscl : '-';
+          // this.rightName = rs.body.mainInscl ? rs.body.mainInscl : '-';
+          // this.rightHospital = rs.body.subInscl ? rs.body.subInscl : '-';
           moment.locale('th');
-          this.rightStartDate = rs.body.transDate ? `${moment(rs.body.transDate).format('DD MMM ')} ${moment(rs.body.transDate).get('year') + 543}` : '-';
+          // this.rightStartDate = rs.body.transDate ? `${moment(rs.body.transDate).format('DD MMM ')} ${moment(rs.body.transDate).get('year') + 543}` : '-';
         } else {
           this.alertService.error('บัตรมีปัญหา กรุณาเสียบใหม่อีกครั้ง', null, 1000);
         }
-      }
+      // }
       this.btnGetCard = false;
     } catch (error) {
       this.btnGetCard = false;
@@ -565,7 +565,7 @@ export class MainComponent implements OnInit {
       const rs: any = await this.nhsoService.getCardOnly();
       if (rs.status === 200) {
         if (this.status !== 'online') {
-          await this.getInfoFromCard();
+          await this.getInfoFromCard(rs.body);
           // this.cardCid = rs.body.pid;
           // this.cardFullName = `${rs.body.fname} ${rs.body.lname}`;
           // this.cardBirthDate = moment(rs.body.birthDate, 'YYYYMMDD').format('DD-MM-YYYY');
@@ -602,8 +602,9 @@ export class MainComponent implements OnInit {
     }
   }
 
-  async getAuthenCode(nhsoInfo: any) {
+  async getAuthenCode(pid) {
     try {
+      const nhsoInfo: any = await this.nhsoService.getCard();
       if (nhsoInfo.status === 200) {
         const authenNHSO: any = await this.nhsoService.getAuthenCode(nhsoInfo.body.pid, nhsoInfo.body.correlationId, this.his.hn, '12272');
         if (authenNHSO.status === 200) {
@@ -621,7 +622,7 @@ export class MainComponent implements OnInit {
         }
       }
     } catch (error) {
-      await this.getLastToken(nhsoInfo.body.pid);
+      await this.getLastToken(pid);
       console.log(error);
     }
   }
