@@ -292,7 +292,7 @@ export class MainComponent implements OnInit {
 
     await this.getPatient('HN');
     await this.getRemed();
-    await this.getNhso(this.cardCid);
+   
   }
 
   async onSearchCid() {
@@ -329,6 +329,8 @@ export class MainComponent implements OnInit {
       this.hisHn = data.hn;
       this.hisFullName = `${data.title}${data.firstName} ${data.lastName}`;
       this.hisBirthDate = data.birthDate;
+      // this.cardCid = data.cid;
+      await this.getNhso(data.cid);
       this.remed = data.remed || false;
       if (this.his) {
         await this.setTab();
