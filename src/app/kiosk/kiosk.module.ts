@@ -10,6 +10,7 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { MainComponent } from './main/main.component';
 import { LayoutComponent } from './layout/layout.component';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { LayoutComponent } from './layout/layout.component';
     SharedModule,
     KioskRoutingModule,
     CountdownModule,
-    NgbModule
+    NgbModule,
+    QRCodeModule
 
   ]
 })

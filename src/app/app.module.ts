@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginModule } from './login/login.module';
 import { SharedModule } from './shared/shared.module';
 import { environment } from '../environments/environment';
+import { QRCodeModule } from 'angularx-qrcode';
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -36,7 +37,8 @@ export const whitelistedDomains = [new RegExp('[\s\S]*')] as RegExp[];
     }),
     SharedModule,
     LoginModule,
-    KioskModule
+    KioskModule,
+    QRCodeModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

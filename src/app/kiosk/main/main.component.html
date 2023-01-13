@@ -15,11 +15,7 @@
       <div class="col-12">
         <div class='silver'>
           <div style="font-size: 2.5rem; font-weight: bold;" (dblclick)="home()">{{hospname}}</div>
-          <h1>ระบบออกคิวอัตโนมัติ (Q4U)
-
-            <div style="float: left;">
-              <img style="width: 50px" src="./assets/images/idcard.png" (click)="printIdCard()">
-            </div>
+          <h1>ระบบยืนยันตนสำหรับ MyMOPH
           </h1>
         </div>
       </div>
@@ -29,7 +25,7 @@
     <div *ngIf="tabProfile">
       <div style="margin: 20px;"></div>
       <div class="row">
-        <div class="col-4">
+        <div class="col-6">
           <div class='silver'>
             <h1>ข้อมูลจากบัตรประชาชน</h1>
             <span>เลขบัตรประชาชน</span>
@@ -41,35 +37,52 @@
             <h4 style="text-align: right">**ข้อมูลจากเครื่องอ่านบัตรประชาชน</h4>
           </div>
         </div>
-        <div class="col-4">
-          <div class='gold'>
-            <h1>ข้อมูลโรงพยาบาล</h1>
-            <span>HN</span>
-            <p id="txtHISHn">{{hisHn || '-'}}</p>
-            <span>ชื่อ - สกุล</span>
-            <p id="txtHISFullname">{{hisFullName || '-'}}</p>
-            <span>วันเกิด</span>
-            <p id="txtHISBirthdate">{{hisBirthDate || '-'}}</p>
-            <span *ngIf="remed">ยาเดิม</span>
-            <!-- <p id="txtHISBirthdate">{{hisBirthDate || '-'}}</p> -->
-            <h4 style="text-align: right">**จากฐานข้อมูลในโรงพยาบาล</h4>
+        <div class="col-6">
+          <div class='silver'>
+            <h2>กรุณาสแกน QRCODE ด้วย MyMOPH</h2>
+            <!-- colorDark: this.colordark,
+            colorLight: this.colorlight,
+            correctLevel: QRCode.CorrectLevel[this.level.toString()],
+            height: this.size,
+            text: this.qrdata || ' ',
+            useSVG: this.usesvg,
+            width: this.size, -->
+            <div *ngIf="showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
+              <qrcode [qrdata]="qrdata" [level]="'Q'" [size]="180"></qrcode>
+            </div>
+            <div *ngIf="!showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
+              ข้อมูลไม่ถูกต้อง กรุณาเสียบบัตรใหม่
+            </div>
           </div>
         </div>
-        <div class="col-4">
-          <div class='silver'>
-            <h1>ข้อมูลสิทธิการรักษา</h1>
 
-            <span>สิทธิการรักษา</span>
-            <p id="txtNHSORight">{{rightName || '-'}}</p>
-            <span>วันที่เริ่มใช้สิทธิ์</span>
-            <p id="txtNHSOStartDart">{{rightStartDate || '-'}}</p>
-            <span>หน่วยบริการหลัก</span>
-            <p id="txtNHSOHmain">{{rightHospital || '-'}}</p>
-            <h4 style="text-align: right">**สำนักงานหลักประกันสุขภาพแห่งชาติ</h4>
+      </div>
+      <div style="margin: 20px;">
+        <div class="row">
+          <div class="col-4">1.</div>
+          <div class="col-4">2.</div>
+          <div class="col-4">3.</div>
+        </div>
+        <div class="row">
+          <div class="col-4" style="text-align: center;">
+            <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
+              <img src="./assets/images/app1.png" style="width: 45%;">
+              or
+              <img src="./assets/images/app2.png" style="width: 45%;">
+            </div>
+          </div>
+          <div class="col-4" style="text-align: center;">
+           <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
+              <img src="./assets/images/app3.png" style="width: 45%;">
+            </div>
+          </div>
+          <div class="col-4" style="text-align: center;">
+           <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
+              <img src="./assets/images/app4.png" style="width: 45%;">
+            </div>
           </div>
         </div>
       </div>
-      <div style="margin: 20px;"></div>
 
       <button *ngIf="btnSelectServicePoint" type="button" class="btn btn-primary"
         style="height: 6rem; font-size: 1.8em; display: block; margin: auto;"
@@ -79,113 +92,12 @@
       </div>
     </div>
 
-    <div *ngIf="tabPrioritie && hisHn">
-      <div class="row" style="margin-top:20px">
-        <div class="col-3"></div>
-        <div class="col-3">
-          <button class="btn btn-primary" style="width: 100%;padding: 2rem;font-size: 2.5rem"
-            (click)="clickPrioritie(1)">มาเอง</button>
-        </div>
-        <!-- <div class="col-1"></div> -->
-        <div class="col-3">
-          <button class="btn btn-primary" style="width: 100%;padding: 2rem;font-size: 2.5rem"
-            (click)="clickPrioritie(3)">มาแทน</button>
-        </div>
-      </div>
-    </div>
 
-    <div id="divDepartment" *ngIf="tabServicePoint">
-      <div style="margin: 20px;"></div>
-      <h1>แผนกที่ต้องการเข้ารับบริการ</h1>
-      <div class="row">
-        <div class="col-3 " style="margin-top:20px"
-          [ngClass]="{'col-3': servicePointList.length > 6,'col-4':servicePointList.length <=6}"
-          *ngFor="let i of  servicePointList">
-          <button class="btn btn-primary" style="width: 100%;padding: 2rem;font-size: 2.5rem"
-            (click)="register(i)" [disabled]="isClick">{{i.service_point_name}}</button>
-        </div>
-      </div>
 
-      <div style="margin: 10px;" *ngIf="servicePointList.length > 3">
-        <button class="btn btn-danger" type="button" (click)="cancel()" [disabled]="isPrinting"
-          style="height: 6rem; font-size: 1.8em; display: block; margin: auto;">ยกเลิก</button>
-      </div>
-    </div>
   </div>
 </div>
 
 <div class="body" style="overflow: hidden" *ngIf="status == 'offline'">
   <!-- <button class="btn btn-success" style="position: absolute;z-index: 999;top:75%;left:35%;width: 30%;font-size: 3rem;" (click)="getInfoFromCard()" [disabled]="btnGetCard">ตรวจสอบสิทธิ์</button> -->
-  <img style="width: 100%" src="./assets/images/bg.png" (click)="onClickManual()">
-</div>
-
-
-<div class="body" *ngIf="status =='manual' && isManual">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class='silver'>
-          <div style="font-size: 2.5rem; font-weight: bold;" (dblclick)="home()">{{hospname}}</div>
-          <h1>ระบบออกคิวอัตโนมัติ (Q4U)</h1>
-        </div>
-      </div>
-    </div>
-    <div style="margin: 20px;"></div>
-    <div class="row">
-      <div class="col-12">
-        <div class='silver'>
-          <input type="text" [(ngModel)]="cid" class="form-control"
-            style="font-size: 5rem;text-align: center;height:100px" maxlength="13" name="cid" id="">
-        </div>
-      </div>
-    </div>
-    <div class="row" style="margin-top: 1rem;">
-      <div class="col-3"></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(1)" style="width:100%;height:80px"><span
-            class="h2">1</span></button></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(2)" style="width:100%;height:80px"><span
-            class="h2">2</span></button></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(3)" style="width:100%;height:80px"><span
-            class="h2">3</span></button></div>
-    </div>
-    <div class="row" style="margin-top: 1rem;">
-      <div class="col-3"></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(4)" style="width:100%;height:80px"><span
-            class="h2">4</span></button></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(5)" style="width:100%;height:80px"><span
-            class="h2">5</span></button></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(6)" style="width:100%;height:80px"><span
-            class="h2">6</span></button></div>
-    </div>
-    <div class="row" style="margin-top: 1rem;">
-      <div class="col-3"></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(7)" style="width:100%;height:80px"><span
-            class="h2">7</span></button></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(8)" style="width:100%;height:80px"><span
-            class="h2">8</span></button></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(9)" style="width:100%;height:80px"><span
-            class="h2">9</span></button></div>
-    </div>
-    <div class="row" style="margin-top: 1rem;">
-      <div class="col-3"></div>
-      <div class="col-2">
-        <button class="btn btn-primary" (click)="onkeycid('b')" style="width:100%;height:80px"><span class="h3"
-            style="line-height: 3.5rem;">กลับ</span></button>
-      </div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid(0)" style="width:100%;height:80px"><span
-            class="h2">0</span></button></div>
-      <div class="col-2"><button class="btn btn-primary" (click)="onkeycid('x')" style="width:100%;height:80px"><span
-            class="h2" style="line-height: 3.5rem;">
-            ←</span> </button> </div>
-    </div>
-    <div class="row" style="margin-top: 1rem;">
-      <div class="col-3"></div>
-      <div class="col-6">
-        <button class="btn btn-success" style="width:100%;height:80px;" (click)="onSearch()"
-          >
-          <span class="h2">ค้นหา</span>
-        </button>
-      </div>
-    </div>
-  </div>
+  <img style="width: 100%" src="./assets/images/bg.png">
 </div>
