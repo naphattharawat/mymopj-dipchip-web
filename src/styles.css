@@ -302,3 +302,75 @@ select.form-control {
   color: black;
   font-weight: bold;
 }
+
+@font-face {
+  font-family: 'K2D-Regular';
+  src: url('assets/fonts/K2D-Regular.ttf') format('truetype');
+  /* src: url('~assets/font/Prompt-Regular.ttf') format('truetype'); */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Kanit-Regular';
+  src: url('assets/fonts/Kanit-Regular.ttf') format('truetype');
+  /* src: url('~assets/font/Prompt-Regular.ttf') format('truetype'); */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Prompt-Regular';
+  src: url('assets/fonts/Prompt-Regular.ttf') format('truetype');
+  /* src: url('~assets/font/Prompt-Regular.ttf') format('truetype'); */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Athiti-Regular';
+  src: url('assets/fonts/Athiti-Regular.ttf') format('truetype');
+  /* src: url('~assets/font/Prompt-Regular.ttf') format('truetype'); */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Orbitron-Regular';
+  src: url('assets/fonts/Orbitron-VariableFont_wght.ttf') format('truetype');
+  /* src: url('~assets/font/Prompt-Regular.ttf') format('truetype'); */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'IBMPlexSansThai-Regular';
+  src: url('assets/fonts/IBMPlexSansThai-Regular.ttf') format('truetype');
+  /* src: url('~assets/font/Prompt-Regular.ttf') format('truetype'); */
+  font-weight: normal;
+  font-style: normal;
+}
+
+.head-font {
+  font-family: K2D-Regular, Tahoma, sans-serif;
+}
+
+.head-font-2 {
+  font-family: Kanit-Regular, Tahoma, sans-serif;
+}
+
+.head-font-3 {
+  font-family: Prompt-Regular, Tahoma, sans-serif;
+}
+
+.head-font-4 {
+  font-family: Athiti-Regular, Tahoma, sans-serif;
+}
+
+.head-font-5 {
+  font-family: IBMPlexSansThai-Regular, Tahoma, sans-serif;
+}
+
+.head-font-mymoph {
+  font-family: Orbitron-Regular, Tahoma, sans-serif;
+}
