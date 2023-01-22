@@ -35,10 +35,11 @@ export class MainComponent implements OnInit {
   kioskId: any;
   isPrinting = false;
 
-  cardCid: any;
-  cardFullName: any;
-  cardBirthDate: any;
+  cardCid: any = "";
+  cardFullName: any = "";
+  cardBirthDate: any = "";
   status = 'offline';
+  // status = 'online';
   qrdata = '';
   showQR = false;
   @ViewChild(CountdownComponent) counter: CountdownComponent;

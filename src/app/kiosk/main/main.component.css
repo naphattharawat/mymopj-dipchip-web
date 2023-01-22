@@ -129,7 +129,49 @@
   width: 100vw;
   height: calc((100%/3)*1);
 }
-.footter-area{
+
+.content-dipchip {
+  margin-top: calc((100%/10)*1);
+}
+
+.content-dipchip-gaussian-left {
+  position: absolute;
+  top: calc((100%/10)*1.6);
+  left: calc((100vw/2)*0.04);
+  height: calc((100%/10)*8);
+  width: calc((100vw/2)*0.90);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.1);
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.content-dipchip-gaussian-right {
+  position: absolute;
+  top: calc((100%/10)*1.6);
+  left: calc((100vw/2)*1);
+  height: calc((100%/10)*8);
+  width: calc((100vw/2)*0.93);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.1);
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.image-example{
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  border: 1vw solid #242424;
+}
+
+.footter-area {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -137,7 +179,8 @@
   height: calc((100%/10)*1);
   background-color: #079675;
 }
-.insert-card-area{
+
+.insert-card-area {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -146,7 +189,8 @@
   /* background-color: #16A085; */
   overflow: hidden;
 }
-.insert-card-area-2{
+
+.insert-card-area-2 {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -155,7 +199,8 @@
   /* background-color: #16A085; */
   overflow: hidden;
 }
-.id-card-area{
+
+.id-card-area {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -167,16 +212,19 @@
   background-size: 100% 100%;
   overflow: hidden;
 }
-.opacity-animation{
+
+.opacity-animation {
   animation: bg-opacity-animation 5s linear infinite;
   -moz-animation: bg-opacity-animation 5s linear infinite;
   -webkit-animation: bg-opacity-animation 5s linear infinite;
 }
-.opacity-animation-3{
+
+.opacity-animation-3 {
   animation: bg-opacity-animation 3s linear infinite;
   -moz-animation: bg-opacity-animation 3s linear infinite;
   -webkit-animation: bg-opacity-animation 3s linear infinite;
 }
+
 .id-card {
   position: absolute;
   bottom: -600%;
@@ -186,7 +234,8 @@
   background-image: url(~/assets/images/thai_id_card.png);
   background-size: 100% 100%;
 }
-.card-reader{
+
+.card-reader {
   position: absolute;
   bottom: 100px;
   left: 20px;
@@ -197,7 +246,8 @@
   -moz-border-radius: 20px;
   border-radius: 20px;
 }
-.card-line-input{
+
+.card-line-input {
   position: absolute;
   bottom: 30px;
   left: 30px;
@@ -211,12 +261,14 @@
   -moz-animation: card_insert_light 1s linear infinite;
   -webkit-animation: card_insert_light 1s linear infinite;
 }
-.text-animation-color{
+
+.text-animation-color {
   animation: text_animation_color 2s linear infinite;
   -moz-animation: text_animation_color 2s linear infinite;
   -webkit-animation: text_animation_color 2s linear infinite;
 }
-.card-reader-top{
+
+.card-reader-top {
   position: absolute;
   top: 0;
   left: 0;
@@ -241,26 +293,33 @@
   0% {
     bottom: -600%;
   }
+
   20% {
     bottom: -100%;
   }
-  80%{
+
+  80% {
     bottom: -100%;
   }
+
   100% {
     bottom: -600%;
   }
 }
+
 @-moz-keyframes myfirst {
   0% {
     bottom: -600%;
   }
+
   20% {
     bottom: -100%;
   }
-  80%{
+
+  80% {
     bottom: -100%;
   }
+
   100% {
     bottom: -600%;
   }
@@ -270,12 +329,15 @@
   0% {
     bottom: -600%;
   }
+
   20% {
     bottom: -100%;
   }
-  80%{
+
+  80% {
     bottom: -100%;
   }
+
   100% {
     bottom: -600%;
   }
@@ -291,7 +353,7 @@
   width: 100%;
   position: relative;
   z-index: 0;
-  color: #51d75c;
+  /* color: #51d75c; */
 }
 
 .stroke-double:before {
@@ -300,105 +362,149 @@
   -webkit-text-stroke: 0.15em #000;
   z-index: -1;
 }
+
 @keyframes bg-opacity-animation {
+
   /* from {color: white;}
   to {color: rgb(64, 255, 0);} */
   0% {
     opacity: 0;
   }
+
   20% {
     opacity: 1;
   }
-  80%{
+
+  80% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
 }
+
 @-moz-keyframes bg-opacity-animation {
   0% {
     opacity: 0;
   }
+
   20% {
     opacity: 1;
   }
-  80%{
+
+  80% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
 }
+
 @-webkit-keyframes bg-opacity-animation {
   0% {
     opacity: 0;
   }
+
   20% {
     opacity: 1;
   }
-  80%{
+
+  80% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
 }
+
 @keyframes text_animation_color {
+
   /* from {color: white;}
   to {color: rgb(64, 255, 0);} */
   0% {
-    color: red;
+    color: var(--color-1);
   }
+
   20% {
-    color: white;
+    color: var(--color-2);
   }
-  80%{
-    color: white;
+
+  80% {
+    color: var(--color-2);
   }
+
   100% {
-    color: red;
+    color: var(--color-1);
   }
 }
+
 @-moz-keyframes text_animation_color {
   0% {
-    color: red;
+    color: var(--color-1);
   }
+
   20% {
-    color: white;
+    color: var(--color-2);
   }
-  80%{
-    color: white;
+
+  80% {
+    color: var(--color-2);
   }
+
   100% {
-    color: red;
+    color: var(--color-1);
   }
 }
+
 @-webkit-keyframes text_animation_color {
   0% {
-    color: red;
+    color: var(--color-1);
   }
+
   20% {
-    color: white;
+    color: var(--color-2);
   }
-  80%{
-    color: white;
+
+  80% {
+    color: var(--color-2);
   }
+
   100% {
-    color: red;
+    color: var(--color-1);
   }
 }
+
 @keyframes card_insert_light {
-  from {background-color: red;}
-  to {background-color: rgb(64, 255, 0);}
+  from {
+    background-color: red;
+  }
+
+  to {
+    background-color: rgb(64, 255, 0);
+  }
 }
+
 @-moz-keyframes card_insert_light {
-  from {background-color: red;}
-  to {background-color: rgb(64, 255, 0);}
+  from {
+    background-color: red;
+  }
+
+  to {
+    background-color: rgb(64, 255, 0);
+  }
 }
+
 @-webkit-keyframes card_insert_light {
-  from {background-color: red;}
-  to {background-color: rgb(64, 255, 0);}
+  from {
+    background-color: red;
+  }
+
+  to {
+    background-color: rgb(64, 255, 0);
+  }
 }
 
 /* snow effect */
@@ -2091,4 +2197,91 @@
     opacity: 1;
     box-shadow: 0 0 2vw 0.4vw yellow;
   }
+}
+
+/* The div container */
+.qrcodeImage {
+  position: relative;
+}
+
+/* Add custom styles here */
+.qrcode-text {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 100%;
+  background-color: #000;
+  color: white;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-orientation: mixed;
+  font-size: 2.0rem;
+}
+
+.slider {
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 80vh;
+  transition: all .2s ease-in-out;
+  animation: slide 10s infinite;
+}
+
+.overlay {
+  color: #fff;
+  width: 100%;
+  height: 80vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: all .2s ease-in-out;
+}
+
+@keyframes slide {
+  0% {
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+    background-image: url(~/assets/images/app1.png);
+    background-size: 100% 100%;
+  }
+
+  15% {
+    opacity: 1;
+    background-image: url(~/assets/images/app1.png);
+    background-size: 100% 100%;
+  }
+  20% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+    background-image: url(~/assets/images/app3.png);
+    background-size: 100% 100%;
+  }
+  35% {
+    opacity: 1;
+    background-image: url(~/assets/images/app3.png);
+    background-size: 100% 100%;
+  }
+  40% {
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+    background-image: url(~/assets/images/app4.png);
+    background-size: 100% 100%;
+  }
+  55% {
+    opacity: 1;
+    background-image: url(~/assets/images/app4.png);
+    background-size: 100% 100%;
+  }
+  60% {
+    opacity: 0;
+  }
+
+  
 }

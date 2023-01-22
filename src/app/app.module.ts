@@ -38,7 +38,7 @@ export const whitelistedDomains = [new RegExp('[\s\S]*')] as RegExp[];
     SharedModule,
     LoginModule,
     KioskModule,
-    QRCodeModule
+    QRCodeModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

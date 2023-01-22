@@ -374,3 +374,7 @@ select.form-control {
 .head-font-mymoph {
   font-family: Orbitron-Regular, Tahoma, sans-serif;
 }
+.qrcodeImage qrcode img {
+  margin: auto !important;
+  width: 100%;
+}

@@ -9,7 +9,8 @@
       </strong>)</button>
   </div>
 </div>
-<div class="body" *ngIf="status == 'online'">
+
+<!-- <div class="body" *ngIf="status == 'online'">
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -40,14 +41,7 @@
         <div class="col-6">
           <div class='silver'>
             <h2>กรุณาสแกน QRCODE ด้วย MyMOPH</h2>
-            <!-- colorDark: this.colordark,
-            colorLight: this.colorlight,
-            correctLevel: QRCode.CorrectLevel[this.level.toString()],
-            height: this.size,
-            text: this.qrdata || ' ',
-            useSVG: this.usesvg,
-            width: this.size, -->
-            <div *ngIf="showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
+            <div *ngIf="!showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
               <qrcode [qrdata]="qrdata" [level]="'Q'" [size]="180"></qrcode>
             </div>
             <div *ngIf="!showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
@@ -72,12 +66,12 @@
             </div>
           </div>
           <div class="col-4" style="text-align: center;">
-           <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
+            <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
               <img src="./assets/images/app3.png" style="width: 45%;">
             </div>
           </div>
           <div class="col-4" style="text-align: center;">
-           <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
+            <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
               <img src="./assets/images/app4.png" style="width: 45%;">
             </div>
           </div>
@@ -95,6 +89,103 @@
 
 
   </div>
+</div> -->
+
+<div class="content-main" style="overflow: hidden" *ngIf="status == 'online'">
+  <!-- <button class="btn btn-success" style="position: absolute;z-index: 999;top:75%;left:35%;width: 30%;font-size: 3rem;" (click)="getInfoFromCard()" [disabled]="btnGetCard">ตรวจสอบสิทธิ์</button> -->
+  <!-- <img style="width: 100%" src="./assets/images/bg.png"> -->
+  <div class="content-sky-bg">
+    <!-- <div class="snow"></div> -->
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+  </div>
+  <div class="content-graphic-1"></div>
+  <div class="content-grass-bg"></div>
+  <div class="content-building"></div>
+  <div class="content-monument opacity-animation"></div>
+  <div class="content-title">
+    <div class="row h-100">
+      <div class="col-12 text-center mt-5">
+        <div class="text-white head-font-5 txt-shadow" title="ระบบยืนยันตนสำหรับ"
+          style="font-size: 3em; font-weight: 700;">ระบบยืนยันตนสำหรับ <span
+            class="head-font-mymoph txt-shadow">MyMOPH</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="content-dipchip">
+    <div class="content-dipchip-gaussian-left">
+      <div class="row">
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="ชื่อ-นามสกุล">ชื่อ-นามสกุล</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtFullname" title="{{cardFullName || '-'}}">
+            {{cardFullName || '-'}}</h2>
+          <!-- <p class="mb-0" id="txtFullname">{{cardFullName || '-'}}</p> -->
+        </div>
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="เลขประจำตัวประชาชน">เลขประจำตัวประชาชน</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtCid" title="{{cardCid || '-'}}">{{cardCid || '-'}}
+          </h2>
+          <!-- <p class="mb-0" id="txtCid">{{cardCid || '-'}}</p> -->
+        </div>
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="วันเกิด">วันเกิด</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtBirthdate" title="{{cardBirthDate || '-'}}">
+            {{cardBirthDate || '-'}}</h2>
+          <!-- <p class="mb-0" id="txtBirthdate">{{cardBirthDate || '-'}}</p> -->
+        </div>
+      </div>
+      <div class="row mt-3 text-center">
+        <div class="head-font-5 stroke-double text-animation-color" title="กรุณา scan QR Code ด้านล่าง"
+          style="--color-1:rgb(98, 255, 19); --color-2:white; font-size: 2.5vw;">กรุณา scan QR Code ด้านล่าง</div>
+        <div class="head-font-5 stroke-double text-animation-color" title="ด้วย Application MyMOPH"
+          style="--color-1:rgb(98, 255, 19); --color-2:white; font-size: 2vw;">ด้วย Application MyMOPH</div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-6 mx-auto text-center">
+          <!-- <img src="assets/images/qr-code-2.svg" class="img-fluid" alt="" srcset=""> -->
+          <div *ngIf="showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
+            <qrcode [qrdata]="qrdata" [level]="'Q'" [size]="200"></qrcode>
+          </div>
+          <div *ngIf="!showQR" style="background-color: white;" class="align-content-center text-center px-3 py-3">
+            <div class="qrcodeImage">
+              <!-- <div class="qrcode-text">scan me</div> -->
+              <qrcode qrdata="https://mymoph.moph.go.th" [level]="'Q'" [size]="200"></qrcode>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-dipchip-gaussian-right">
+      <div class="row h-100">
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="วิธีการ scan QR Code">วิธีการ scan QR Code</h3>
+        </div>
+        <div class="col-8 mx-auto mt-3">
+          <img src="./assets/images/mymoph-ekyc-by-kiosk.gif" class="image-example" style="width: 100%;">
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="content-main" style="overflow: hidden" *ngIf="status == 'offline'">
@@ -125,7 +216,9 @@
   <div class="content-title">
     <div class="row h-100 mt-5">
       <div class="col-12 text-center mt-5">
-        <div class="text-white head-font-5 txt-shadow" title="ระบบยืนยันตนสำหรับ" style="font-size: 3em; font-weight: 700;">ระบบยืนยันตนสำหรับ <span class="head-font-mymoph txt-shadow">MyMOPH</span></div>
+        <div class="text-white head-font-5 txt-shadow" title="ระบบยืนยันตนสำหรับ"
+          style="font-size: 3em; font-weight: 700;">ระบบยืนยันตนสำหรับ <span
+            class="head-font-mymoph txt-shadow">MyMOPH</span></div>
       </div>
       <div class="col-3 mx-auto">
         <img src="assets/images/mymoph-v8-go-white.png" class="img-fluid" alt="" srcset="">
@@ -135,15 +228,19 @@
   <div class="footter-area">
     <div class="row h-100">
       <div class="col-12 mx-auto text-center pt-4">
-        <div class="head-font-5 text-white" style="font-size: 2vw; font-weight: 600;">ติดต่อสอบถาม https://mymoph.moph.go.th หรือแสกน QR Code</div>
+        <div class="head-font-5 text-white" style="font-size: 2vw; font-weight: 600;">ติดต่อสอบถาม
+          https://mymoph.moph.go.th หรือแสกน QR Code</div>
       </div>
     </div>
   </div>
   <div class="content-insertcard-hint">
     <div class="row h-100 px-0 mx-0">
       <div class="col-12 my-auto text-center px-0 mx-0">
-        <div class="head-font-5 stroke-double text-animation-color" style="font-size: 2.5vw;" title="กรุณาเสียบบัตรประจำตัวประชาชน">กรุณาเสียบบัตรประจำตัวประชาชน</div>
-        <div class="head-font-5 stroke-double text-animation-color" style="font-size: 2vw;" title="ที่ช่องเสียบบัตร">ที่ช่องเสียบบัตร</div>
+        <div class="head-font-5 stroke-double text-animation-color"
+          style="font-size: 2.5vw; --color-1:red; --color-2:white;" title="กรุณาเสียบบัตรประจำตัวประชาชน">
+          กรุณาเสียบบัตรประจำตัวประชาชน</div>
+        <div class="head-font-5 stroke-double text-animation-color"
+          style="font-size: 2vw; --color-1:red; --color-2:white;" title="ที่ช่องเสียบบัตร">ที่ช่องเสียบบัตร</div>
       </div>
     </div>
   </div>
@@ -169,5 +266,5 @@
       </div>
     </div>
   </div>
-  
+
 </div>
