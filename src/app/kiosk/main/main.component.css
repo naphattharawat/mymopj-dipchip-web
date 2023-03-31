@@ -49,7 +49,7 @@
 .content-main {
   position: relative;
   width: 100%;
-  min-height: calc((100vw/4)*3);
+  min-height: calc((100vw/16)*9);
   background-color: rgb(235, 235, 235);
   overflow: hidden;
 }
@@ -62,6 +62,8 @@
   height: calc((100%/3)*1);
   background-image: url(~/assets/images/thailandSkyline.svg);
   background-size: cover;
+  background-position: bottom;
+  /* background-color: #16A085; */
 }
 
 .content-sky-bg {
@@ -89,7 +91,7 @@
   position: absolute;
   bottom: calc(((100%/3)*1) - ((100vh/25)*1));
   right: -10%;
-  width: 60%;
+  width: 50%;
   height: calc(((100%/3)*1) + ((100vh/10)*1));
   background-image: url(~/assets/images/moph-building-2.svg);
   background-size: 100%;
@@ -101,7 +103,7 @@
 .content-monument {
   position: absolute;
   bottom: calc(((100%/3)*1) - ((100vh/20)*1));
-  right: -10%;
+  right: -15%;
   width: 60%;
   height: calc(((100%/3)*1) + ((100vh/10)*1));
   background-image: url(~/assets/images/moph-monument.svg);
@@ -112,7 +114,7 @@
 
 .content-insertcard-hint {
   position: absolute;
-  bottom: 20px;
+  bottom: calc((100%/9)*1);
   left: 20px;
   width: 100%;
   height: calc(((100vh/10)*2));
@@ -131,14 +133,14 @@
 }
 
 .content-dipchip {
-  margin-top: calc((100%/10)*1);
+  margin-top: calc((100%/10)*.5);
 }
 
 .content-dipchip-gaussian-left {
   position: absolute;
-  top: calc((100%/10)*1.6);
+  top: calc((100%/10)*1.4);
   left: calc((100vw/2)*0.04);
-  height: calc((100%/10)*8);
+  height: calc((100%/10)*8.3);
   width: calc((100vw/2)*0.90);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -151,9 +153,9 @@
 
 .content-dipchip-gaussian-right {
   position: absolute;
-  top: calc((100%/10)*1.6);
+  top: calc((100%/10)*1.4);
   left: calc((100vw/2)*1);
-  height: calc((100%/10)*8);
+  height: calc((100%/10)*8.3);
   width: calc((100vw/2)*0.93);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -176,7 +178,7 @@
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: calc((100%/10)*1);
+  height: calc((100%/9)*1);
   background-color: #079675;
 }
 
@@ -193,7 +195,7 @@
 .insert-card-area-2 {
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: -5%;
   width: 360px;
   height: 200px;
   /* background-color: #16A085; */
