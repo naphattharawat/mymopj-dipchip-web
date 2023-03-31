@@ -42,7 +42,7 @@ export const whitelistedDomains = [new RegExp('[\s\S]*')] as RegExp[];
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: 'API_URL', useValue: localStorage.getItem('API_URL') },
+    { provide: 'API_URL', useValue: environment.apiUrl },
   ],
   bootstrap: [AppComponent]
 })

@@ -8,6 +8,7 @@ import { MqttClient } from 'mqtt';
 import * as Random from 'random-js';
 import { CountdownComponent } from 'ngx-countdown';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { retry } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NhsoService } from 'src/app/shared/nhso.service';
 @Component({
@@ -17,9 +18,11 @@ import { NhsoService } from 'src/app/shared/nhso.service';
 })
 export class MainComponent implements OnInit {
 
-  myWebSocket: WebSocketSubject<any> = webSocket(
-    'ws://localhost:8443/moph/smartcard'
-  );
+  retryConfig: any = {
+    delay: 3000,
+  };
+
+  myWebSocket: WebSocketSubject<any>;
 
   id: any;
   jwtHelper = new JwtHelperService();
@@ -41,13 +44,14 @@ export class MainComponent implements OnInit {
   kioskId: any;
   isPrinting = false;
 
-  cardCid: any = "";
-  cardFullName: any = "";
-  cardBirthDate: any = "";
+  cardCid: any = '';
+  cardFullName: any = '';
+  cardBirthDate: any = '';
   status = 'offline';
   // status = 'online';
   qrdata = '';
   showQR = false;
+  sessionId: any;
   @ViewChild(CountdownComponent) counter: CountdownComponent;
 
   constructor(
@@ -62,24 +66,49 @@ export class MainComponent implements OnInit {
         this.token = params.token || null;
       });
 
+
+  }
+
+  async getSession(cid) {
+    try {
+      const rs: any = await this.kioskService.getSession(cid);
+      return rs;
+    } catch (error) {
+      return { ok: false };
+    }
+  }
+
+  startSocket() {
+    const that = this;
+    this.myWebSocket = webSocket(
+      'ws://localhost:8443/moph/smartcard'
+    );
+
     this.myWebSocket.subscribe(
       async (msg) => {
         if (msg.status === 'String Retrieved' && msg.data.cid) {
-          this.status = 'online';
-          let birth = moment(msg.data.birthdate);
-          birth = birth.add(-543, 'year');
+          const sess = await this.getSession(msg.data.cid);
+          if (sess.ok) {
+            this.sessionId = sess.sessionId;
+            this.status = 'online';
+            let birth = moment(msg.data.birthdate);
+            birth = birth.add(-543, 'year');
 
-          this.setDataFromCard({
-            cid: msg.data.cid,
-            fname: msg.data.thai_firstname,
-            lname: msg.data.thai_lastname,
-            tname: msg.data.thai_title,
-            dob: birth.toDate().toLocaleDateString('th-TH', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })
-          })
+            await this.setDataFromCard({
+              cid: msg.data.cid,
+              fname: msg.data.thai_firstname,
+              lname: msg.data.thai_lastname,
+              tname: msg.data.thai_title,
+              dob: birth.toDate().toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })
+            });
+          } else {
+            this.alertService.serverError();
+          }
+
         }
 
         if (msg.status === 'Card Exited') {
@@ -89,13 +118,23 @@ export class MainComponent implements OnInit {
 
       },
       (err) => {
+        console.log(err);
+        setTimeout(function () {
+          that.startSocket();
+        }, 3000);
       },
-      () => console.log('complete')
+      () => {
+        console.log('complete');
+        setTimeout(function () {
+          that.startSocket();
+        }, 3000);
+      }
     );
   }
 
   ngOnInit() {
     try {
+      this.startSocket();
       // this.token = this.token || localStorage.getItem('token');
       // if (this.token) {
       //   const decodedToken = this.jwtHelper.decodeToken(this.token);
@@ -244,8 +283,8 @@ export class MainComponent implements OnInit {
       this.cardBirthDate = data.dob;
 
       const rnd = new Random();
-      const strRnd = rnd.integer(1111111111, 9999999999);
-      const sessionId = `${data.cid}-${data.fname}-${data.lname}-${strRnd}`;
+      // const strRnd = rnd.integer(1111111111, 9999999999);
+      const sessionId = `${data.cid}-${data.fname}-${data.lname}-${this.sessionId}`;
       this.qrdata = `mymoph://qr?clientId=rLiNPkqoljnPWlQtjoVc&sessionId=${sessionId}`;
       // if (this.cardCid) {
 

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3002/v1',
+  apiUrl: 'https://api-mymoph.moph.go.th/dipchip-direct',
 };
 
 /*
