@@ -12,7 +12,8 @@ export class AlertService {
 
     const option: SweetAlertOptions = {
       title: title,
-      text: text,
+      // text: text,
+      html: '<div style="direction:rtl;font-size:20px;font-weight:bold;">$text</div>'.replace('$text', text),
       type: 'error',
       confirmButtonText: 'ตกลง'
     };
@@ -65,7 +66,7 @@ export class AlertService {
 
   }
 
-  async confirm(text = 'คุณต้องการดำเนินการนี้ ใช่หรือไม่?', ) {
+  async confirm(text = 'คุณต้องการดำเนินการนี้ ใช่หรือไม่?',) {
     const option: SweetAlertOptions = {
       title: '',
       text: text,

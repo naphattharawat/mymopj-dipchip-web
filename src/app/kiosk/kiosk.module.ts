@@ -11,13 +11,15 @@ import { FormsModule } from '@angular/forms';
 import { MainComponent } from './main/main.component';
 import { LayoutComponent } from './layout/layout.component';
 import { QRCodeModule } from 'angularx-qrcode';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
     MainComponent,
     SettingKioskComponent,
     LayoutComponent,
-    PrinterComponent
+    PrinterComponent,
+    RegisterComponent
   ],
   imports: [
     CommonModule,

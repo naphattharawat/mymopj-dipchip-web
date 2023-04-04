@@ -1,3 +1,4 @@
+import { RegisterComponent } from './register/register.component';
 import { PrinterComponent } from './printer/printer.component';
 import { SettingKioskComponent } from './setting-kiosk/setting-kiosk.component';
 import { MainComponent } from './main/main.component';
@@ -11,8 +12,9 @@ const routes: Routes = [
     // component: LayoutComponent,
     // canActivate: [AuthGuardService],
     children: [
-      { path: 'main', component: MainComponent },
       { path: '', redirectTo: 'main', pathMatch: 'full' },
+      { path: 'main', component: MainComponent },
+      { path: 'register', component: RegisterComponent },
       {
         path: 'setting', component: LayoutComponent, children: [
           { path: '', component: SettingKioskComponent },

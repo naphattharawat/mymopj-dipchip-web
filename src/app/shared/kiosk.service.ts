@@ -20,20 +20,36 @@ export class KioskService {
 
   async getSession(cid) {
     const _url = `${this.apiUrl}/qr?cid=${cid}`;
-    // let _httpOptions = {};
-
-    // if (token) {
-    //   _httpOptions = {
-    //     headers: new HttpHeaders({
-    //       'Content-Type': 'application/json',
-    //       'Authorization': 'Bearer ' + token
-    //     })
-    //   };
-    // } else {
-    //   _httpOptions = this.httpOptions;
-    // }
-
     return this.httpClient.get(_url).toPromise();
+  }
+
+  async register(cid, fname, lname, email, tel, password) {
+    const _url = `https://members.moph.go.th/api/v1/m/register`;
+    return this.httpClient.post(_url, {
+      cid,
+      first_name: fname,
+      last_name: lname,
+      password: password,
+      email: email,
+      telephone: tel
+    }).toPromise();
+  }
+
+  async verify(accessToken, sessionId) {
+    const _url = `https://api-mymoph.moph.go.th/dipchip-direct/dipchip/v2`;
+    return this.httpClient.post(_url, {
+      access_token: accessToken,
+      session_id: sessionId
+    }).toPromise();
+  }
+
+  async login(username, password) {
+    const _url = `https://members.moph.go.th/api/v1/m/oauth/token`;
+    return this.httpClient.post(_url, {
+      clientId: 'AxSJdRBwkoAnTChdGJsR',
+      username: username,
+      password: password
+    }).toPromise();
   }
 
 }

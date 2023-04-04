@@ -378,3 +378,8 @@ select.form-control {
   margin: auto !important;
   width: 100%;
 }
+
+.swal2-title {
+  font-size: 3rem !important;
+  /* font-family: Georgia, serif; */
+}
