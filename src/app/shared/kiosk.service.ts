@@ -52,4 +52,9 @@ export class KioskService {
     }).toPromise();
   }
 
+  async hrstatus(cid) {
+    const _url = `${this.apiUrl}/status?cid=${cid}`;
+    return this.httpClient.get(_url).toPromise();
+  }
+
 }

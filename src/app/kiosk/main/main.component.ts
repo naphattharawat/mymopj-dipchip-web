@@ -47,11 +47,13 @@ export class MainComponent implements OnInit {
   cardCid: any = '';
   cardFullName: any = '';
   cardBirthDate: any = '';
-  status = 'offline';
-  // status = 'online';
+  // status = 'offline';
+  status = 'online';
   qrdata = '';
   showQR = false;
   sessionId: any;
+  step = 3;
+  isHr = false;
   @ViewChild(CountdownComponent) counter: CountdownComponent;
 
   constructor(
@@ -78,63 +80,9 @@ export class MainComponent implements OnInit {
     }
   }
 
-  startSocket() {
-    const that = this;
-    this.myWebSocket = webSocket(
-      'ws://localhost:8443/moph/smartcard'
-    );
-
-    this.myWebSocket.subscribe(
-      async (msg) => {
-        if (msg.status === 'String Retrieved' && msg.data.cid) {
-          const sess = await this.getSession(msg.data.cid);
-          if (sess.ok) {
-            this.sessionId = sess.sessionId;
-            this.status = 'online';
-            let birth = moment(msg.data.birthdate);
-            birth = birth.add(-543, 'year');
-
-            await this.setDataFromCard({
-              cid: msg.data.cid,
-              fname: msg.data.thai_firstname,
-              lname: msg.data.thai_lastname,
-              tname: msg.data.thai_title,
-              dob: birth.toDate().toLocaleDateString('th-TH', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            });
-          } else {
-            this.alertService.serverError();
-          }
-
-        }
-
-        if (msg.status === 'Card Exited') {
-          this.status = 'offline';
-          this.clearDataFromCard();
-        }
-
-      },
-      (err) => {
-        console.log(err);
-        setTimeout(function () {
-          that.startSocket();
-        }, 3000);
-      },
-      () => {
-        console.log('complete');
-        setTimeout(function () {
-          that.startSocket();
-        }, 3000);
-      }
-    );
-  }
-
   ngOnInit() {
     try {
-      this.startSocket();
+      // this.startSocket();
       // this.token = this.token || localStorage.getItem('token');
       // if (this.token) {
       //   const decodedToken = this.jwtHelper.decodeToken(this.token);
@@ -146,7 +94,7 @@ export class MainComponent implements OnInit {
       //   this.urlSendAPIPOST = localStorage.getItem('urlSendVisitPost') ? localStorage.getItem('urlSendVisitPost') : null;
       //   this.isSendAPIGET = localStorage.getItem('isSendAPIGET') === 'Y' ? true : false;
       //   this.isSendAPIPOST = localStorage.getItem('isSendAPIPOST') === 'Y' ? true : false;
-      // this.initialSocket();
+      this.initialSocket();
       // } else {
       //   this.alertService.error('ไม่พบ TOKEN');
       // }
@@ -161,7 +109,7 @@ export class MainComponent implements OnInit {
     // await this.getServicePoint();
     // await this.getTokenNHSO();
     // await this.setInterval();
-    // await this.connectWebSocket();
+    await this.connectWebSocket();
   }
 
 

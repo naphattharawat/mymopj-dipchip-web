@@ -1,101 +1,17 @@
-<!-- <div class="card card-inverse-danger" *ngIf="isOffline">
+<div class="card card-inverse-danger" *ngIf="isOffline">
   <div class="card-body">
     <p class="mb-4">
-      เกิดข้อผิดพลาดในการเชื่อมต่อกับ Notify Server.
+      เกิดข้อผิดพลาดในการเชื่อมต่อกับ Smartcard Reader
     </p>
-    <button class="btn btn-danger" (click)="connectWebSocket()">เชื่อมต่อใหม่ (<strong>
-        <countdown [config]="{leftTime: 15, template: '$!s!'}" (finished)="onFinished()" (notify)="onNotify($event)">
-        </countdown>
-      </strong>)</button>
+    <!-- <button class="btn btn-danger" (click)="connectWebSocket()">เชื่อมต่อใหม่ (<strong>
+        <countdown [config]="{leftTime: 15, template: '$!s!'}" (finished)="onFinished()" (notify)="onNotify($event)"> -->
+    <!-- </countdown> -->
+    <!-- </strong>)</button> -->
   </div>
-</div> -->
-
-<!-- <div class="body" *ngIf="status == 'online'">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class='silver'>
-          <div style="font-size: 2.5rem; font-weight: bold;" (dblclick)="home()">{{hospname}}</div>
-          <h1>ระบบยืนยันตนสำหรับ MyMOPH
-          </h1>
-        </div>
-      </div>
-
-    </div>
-
-    <div *ngIf="tabProfile">
-      <div style="margin: 20px;"></div>
-      <div class="row">
-        <div class="col-6">
-          <div class='silver'>
-            <h1>ข้อมูลจากบัตรประชาชน</h1>
-            <span>เลขบัตรประชาชน</span>
-            <p id="txtCid">{{cardCid || '-'}}</p>
-            <span>ชื่อ - สกุล</span>
-            <p id="txtFullname">{{cardFullName || '-'}}</p>
-            <span>วันเกิด</span>
-            <p id="txtBirthdate">{{cardBirthDate || '-'}}</p>
-            <h4 style="text-align: right">**ข้อมูลจากเครื่องอ่านบัตรประชาชน</h4>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class='silver'>
-            <h2>กรุณาสแกน QRCODE ด้วย MyMOPH</h2>
-            <div *ngIf="!showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
-              <qrcode [qrdata]="qrdata" [level]="'Q'" [size]="180"></qrcode>
-            </div>
-            <div *ngIf="!showQR" style="width: 40%;margin-left: 30%;text-align: center;align-items: center;">
-              ข้อมูลไม่ถูกต้อง กรุณาเสียบบัตรใหม่
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <div style="margin: 20px;">
-        <div class="row">
-          <div class="col-4">1.</div>
-          <div class="col-4">2.</div>
-          <div class="col-4">3.</div>
-        </div>
-        <div class="row">
-          <div class="col-4" style="text-align: center;">
-            <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
-              <img src="./assets/images/app1.png" style="width: 45%;">
-              or
-              <img src="./assets/images/app2.png" style="width: 45%;">
-            </div>
-          </div>
-          <div class="col-4" style="text-align: center;">
-            <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
-              <img src="./assets/images/app3.png" style="width: 45%;">
-            </div>
-          </div>
-          <div class="col-4" style="text-align: center;">
-            <div style="width:100%;padding:20px;  background: white;text-align: center;border-radius: 5px;">
-              <img src="./assets/images/app4.png" style="width: 45%;">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button *ngIf="btnSelectServicePoint" type="button" class="btn btn-primary"
-        style="height: 6rem; font-size: 1.8em; display: block; margin: auto;"
-        (click)="onSelectServicePointList()">เลือกแผนกเข้ารับบริการ</button>
-      <div *ngIf="!cardFullName">
-        <button class="btn btn-danger" (click)="clearData()"><span class="h3">กลับหน้าหลัก</span> </button>
-      </div>
-    </div>
-
-
-
-  </div>
-</div> -->
+</div>
 
 <div class="content-main" style="overflow: hidden" *ngIf="status == 'online'">
-  <!-- <button class="btn btn-success" style="position: absolute;z-index: 999;top:75%;left:35%;width: 30%;font-size: 3rem;" (click)="getInfoFromCard()" [disabled]="btnGetCard">ตรวจสอบสิทธิ์</button> -->
-  <!-- <img style="width: 100%" src="./assets/images/bg.png"> -->
   <div class="content-sky-bg">
-    <!-- <div class="snow"></div> -->
     <div class="firefly"></div>
     <div class="firefly"></div>
     <div class="firefly"></div>
@@ -125,7 +41,44 @@
       </div>
     </div>
   </div>
-  <div class="content-dipchip">
+  <div class="content-dipchip" *ngIf="step == 1">
+    <div class="content-dipchip-gaussian">
+      <div class="row">
+        <div class="col-6">
+          <button class="btn btn-primary" style="font-size: 2rem;">
+            ข้าราชการ พนักงานราชการ ลูกจ้างประจำ<br>
+            สังกัดสำนักงานปลัดกระทรวงสาธารณะสุข
+          </button>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-primary" style="font-size: 2rem;">
+            ลูกจ้างชั่วคราว/เจ้าหน้าที่<br>ที่ทำงานในสำนักงานปลัดกระทรวงสาธารณะสุข
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content-dipchip" *ngIf="step == 2">
+    <div class="content-dipchip-gaussian">
+
+      <div class="row">
+        <div class="col-12">
+          <h1>ข้าราชการ พนักงานราชการ</h1>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=3">
+            ยืนยันตัวตนด้วย MyMOPH
+          </button>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=4">
+            สมัครใช้งาน Internet อย่างเดียว
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content-dipchip" *ngIf="step == 3">
     <div class="content-dipchip-gaussian-left">
       <div class="row">
         <div class="col-12 head-font-2 text-white">
@@ -159,6 +112,7 @@
         <div class="head-font-5 stroke-double text-animation-color" title="ด้วย Application MyMOPH"
           style="--color-1:rgb(98, 255, 19); --color-2:white; font-size: 2vw;">ด้วย Application MyMOPH</div>
       </div>
+
       <div class="row mt-3">
         <div class="col-4 mx-auto text-center">
           <!-- <img src="assets/images/qr-code-2.svg" class="img-fluid" alt="" srcset=""> -->
@@ -178,6 +132,13 @@
             </div>
           </div>
         </div>
+      </div><br>
+      <div class="row" >
+        <div class="col-12">
+          <button class="btn btn-success" (click)="step=4">
+            สมัคร Internet 
+          </button>
+        </div>
       </div>
     </div>
     <div class="content-dipchip-gaussian-right">
@@ -191,7 +152,104 @@
       </div>
     </div>
   </div>
+  <div class="content-dipchip" *ngIf="step == 4">
+    <div class="content-dipchip-gaussian-left">
+      <div class="row">
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="ชื่อ-นามสกุล">ชื่อ-นามสกุล</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtFullname" title="{{cardFullName || '-'}}">
+            {{cardFullName || '-'}}</h2>
+        </div>
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="เลขประจำตัวประชาชน">เลขประจำตัวประชาชน</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtCid" title="{{cardCid || '-'}}">{{cardCid || '-'}}
+          </h2>
+        </div>
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="วันเกิด">วันเกิด</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtBirthdate" title="{{cardBirthDate || '-'}}">
+            {{cardBirthDate || '-'}}</h2>
+        </div>
+      </div>
 
+    </div>
+    <div class="content-dipchip-gaussian-right">
+      <!-- <div class="row h-100"> -->
+      <div class="row mt-1 text-center">
+        <div class="head-font-5 stroke-double text-animation-color" title="กรุณากรอกข้อมูลเพื่อสมัคร"
+          style="--color-1:rgb(98, 255, 19); --color-2:white; font-size: 2.5vw;">กรุณากรอกข้อมูลเพื่อสมัคร</div>
+        <!-- <div class="head-font-5 stroke-double text-animation-color" title="ด้วย Application MyMOPH"
+            style="--color-1:rgb(98, 255, 19); --color-2:white; font-size: 2vw;">ด้วย Application MyMOPH</div> -->
+      </div>
+      <div class="row mt-3">
+        <div class="col-4 mx-auto">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="เบอร์โทรศัพท์">เบอร์โทรศัพท์</h3>
+        </div>
+        <div class="col-4 mx-auto">
+          <input type="text" style="font-size: 2rem;" name="tel" [(ngModel)]="tel">
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-4 mx-auto">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="email">email</h3>
+        </div>
+        <div class="col-4 mx-auto">
+          <input type="text" style="font-size: 2rem;" name="email" [(ngModel)]="email">
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-4 mx-auto">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="password">password</h3>
+        </div>
+        <div class="col-4 mx-auto">
+          <input type="password" style="font-size: 2rem;" name="password" [(ngModel)]="password">
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-4 mx-auto">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="ยืนยัน password">ยืนยัน password</h3>
+        </div>
+        <div class="col-4 mx-auto">
+          <input type="password" style="font-size: 2rem;" name="password2" [(ngModel)]="password2">
+        </div>
+      </div>
+      <div class="row mt-3 mx-auto text-center">
+        <button style="margin: auto;" class="btn btn-danger" (click)="onClickRegister()">สมัครใช้งาน Internet</button>
+      </div>
+
+    </div>
+  </div>
+  <div class="content-dipchip" *ngIf="step == 5">
+    <div class="content-dipchip-gaussian">
+      
+      <div class="row">
+        <div class="col-12">
+          <h1>  ลูกจ้างชั่วคราว/เจ้าหน้าที่ ที่ทำงานในสำนักงานปลัดกระทรวงสาธารณะสุข </h1>
+        </div>
+        <div class="col-4">
+          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=3">
+            ยืนยันตัวตนด้วย MyMOPH
+          </button>
+        </div>
+        <div class="col-4">
+          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=4">
+            สมัครใช้งาน Internet อย่างเดียว
+          </button>
+        </div>
+        <div class="col-4">
+          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=4">
+            ต่ออายุการใช้งาน
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="content-main" style="overflow: hidden" *ngIf="status == 'offline'">
