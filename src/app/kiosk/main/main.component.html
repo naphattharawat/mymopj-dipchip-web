@@ -45,13 +45,13 @@
     <div class="content-dipchip-gaussian">
       <div class="row">
         <div class="col-6">
-          <button class="btn btn-primary" style="font-size: 2rem;">
+          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step = 2">
             ข้าราชการ พนักงานราชการ ลูกจ้างประจำ<br>
             สังกัดสำนักงานปลัดกระทรวงสาธารณะสุข
           </button>
         </div>
         <div class="col-6">
-          <button class="btn btn-primary" style="font-size: 2rem;">
+          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step = 5">
             ลูกจ้างชั่วคราว/เจ้าหน้าที่<br>ที่ทำงานในสำนักงานปลัดกระทรวงสาธารณะสุข
           </button>
         </div>
@@ -60,20 +60,26 @@
   </div>
   <div class="content-dipchip" *ngIf="step == 2">
     <div class="content-dipchip-gaussian">
-
       <div class="row">
         <div class="col-12">
-          <h1>ข้าราชการ พนักงานราชการ</h1>
+          <h1 style="color:white">ข้าราชการ พนักงานราชการ สป.สธ.</h1>
         </div>
-        <div class="col-6">
-          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=3">
-            ยืนยันตัวตนด้วย MyMOPH
-          </button>
-        </div>
-        <div class="col-6">
-          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=4">
-            สมัครใช้งาน Internet อย่างเดียว
-          </button>
+        <div class="col-12">
+          <div class="box" (click)="step=3">
+            <div class="box-content">
+              ยืนยันตัวตนด้วย <br>MyMOPH
+            </div>
+          </div>
+          <div class="box" (click)="step=4">
+            <div class="box-content">
+              สมัครใช้งาน Internet <br>โดยไม่ใช้ MyMOPH
+            </div>
+          </div>
+          <div class="box" (click)="step=6">
+            <div class="box-content">
+              เปลี่ยนรหัส<br> (comming soon)
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -133,10 +139,10 @@
           </div>
         </div>
       </div><br>
-      <div class="row" >
+      <div class="row">
         <div class="col-12">
           <button class="btn btn-success" (click)="step=4">
-            สมัคร Internet 
+            สมัคร Internet
           </button>
         </div>
       </div>
@@ -220,34 +226,91 @@
         </div>
       </div>
       <div class="row mt-3 mx-auto text-center">
-        <button style="margin: auto;" class="btn btn-danger" (click)="onClickRegister()">สมัครใช้งาน Internet</button>
+        <button style="margin: auto;" class="btn btn-danger" (click)="onClickRegister()" [disabled]="isSave">สมัครใช้งาน Internet</button>
       </div>
 
     </div>
   </div>
   <div class="content-dipchip" *ngIf="step == 5">
     <div class="content-dipchip-gaussian">
-      
+
       <div class="row">
         <div class="col-12">
-          <h1>  ลูกจ้างชั่วคราว/เจ้าหน้าที่ ที่ทำงานในสำนักงานปลัดกระทรวงสาธารณะสุข </h1>
+          <h1> ลูกจ้างชั่วคราว/เจ้าหน้าที่ ที่ทำงานในสำนักงานปลัดกระทรวงสาธารณะสุข </h1>
         </div>
-        <div class="col-4">
-          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=3">
-            ยืนยันตัวตนด้วย MyMOPH
-          </button>
-        </div>
-        <div class="col-4">
-          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=4">
-            สมัครใช้งาน Internet อย่างเดียว
-          </button>
-        </div>
-        <div class="col-4">
-          <button class="btn btn-primary" style="font-size: 2rem;" (click)="step=4">
-            ต่ออายุการใช้งาน
-          </button>
+        <div class="col-12">
+          <div class="box" (click)="step=3">
+            <div class="box-content">
+              ยืนยันตัวตนด้วย<br>MyMOPH
+            </div>
+          </div>
+          <div class="box" (click)="step=4">
+            <div class="box-content">
+              สมัครใช้งาน Internet
+            </div>
+          </div>
+          <div class="box" (click)="renewUser()">
+            <div class="box-content">
+              ต่ออายุการใช้งาน<br>
+              comming soon
+            </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="content-dipchip" *ngIf="step == 6">
+    <div class="content-dipchip-gaussian-left">
+      <div class="row">
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="ชื่อ-นามสกุล">ชื่อ-นามสกุล</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtFullname" title="{{cardFullName || '-'}}">
+            {{cardFullName || '-'}}</h2>
+        </div>
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="เลขประจำตัวประชาชน">เลขประจำตัวประชาชน</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtCid" title="{{cardCid || '-'}}">{{cardCid || '-'}}
+          </h2>
+        </div>
+        <div class="col-12 head-font-2 text-white">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="วันเกิด">วันเกิด</h3>
+        </div>
+        <div class="col-12 head-font-2 text-white text-center">
+          <h2 class="txt-shadow head-font-2 stroke-double" id="txtBirthdate" title="{{cardBirthDate || '-'}}">
+            {{cardBirthDate || '-'}}</h2>
+        </div>
+      </div>
+
+    </div>
+    <div class="content-dipchip-gaussian-right">
+      <!-- <div class="row h-100"> -->
+      <div class="row mt-1 text-center">
+        <div class="head-font-5 stroke-double text-animation-color" title="กรุณากรอกข้อมูลเพื่อเปลี่ยนรหัส"
+          style="--color-1:rgb(98, 255, 19); --color-2:white; font-size: 2.5vw;">กรุณากรอกข้อมูลเพื่อเปลี่ยนรหัส</div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-4 mx-auto">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="password">password</h3>
+        </div>
+        <div class="col-4 mx-auto">
+          <input type="password" style="font-size: 2rem;" name="password" [(ngModel)]="password">
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-4 mx-auto">
+          <h3 class="head-font-2 mb-0 stroke-double text-warning" title="ยืนยัน password">ยืนยัน password</h3>
+        </div>
+        <div class="col-4 mx-auto">
+          <input type="password" style="font-size: 2rem;" name="password2" [(ngModel)]="password2">
+        </div>
+      </div>
+      <div class="row mt-3 mx-auto text-center">
+        <button style="margin: auto;" class="btn btn-danger" (click)="changePassword()">เปลี่ยนรหัส</button>
+      </div>
+
     </div>
   </div>
 </div>
